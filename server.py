@@ -20,7 +20,7 @@ app.config["SESSION_PERMANENT"] = True
 app.config["SESSION_USE_SIGNER"] = True
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
-app.config["SESSION_COOKIE_SECURE"] = False
+app.config["SESSION_COOKIE_SECURE"] = True 
 app.secret_key = os.getenv("SECRET_KEY")
 
 Session(app) 
@@ -73,6 +73,7 @@ def login():
                 'email': user['email'],
                 'user_role': role
             }
+            session.modified = True
 
             redirect_url = f"/{role}/dashboard"
             return jsonify({'message': 'Login successful', 'redirect': redirect_url}), 200
