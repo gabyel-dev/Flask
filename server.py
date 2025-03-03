@@ -74,7 +74,7 @@ def login():
                 'user_role': role
             }
 
-            redirect_url = f"/{role}/dashboard"
+            redirect_url = f"#/{role}/dashboard"
             return jsonify({'message': 'Login successful', 'redirect': redirect_url}), 200
         else:
             return jsonify({'message': 'Wrong Email or Password'}), 401
@@ -109,7 +109,7 @@ def register():
         )
         conn.commit()
 
-        return jsonify({'message': 'Registered Successfully!', 'redirect': '/login'}), 201
+        return jsonify({'message': 'Registered Successfully!', 'redirect': '#/login'}), 201
     except Exception as e:
         return jsonify({'error': f'Registration failed: {str(e)}'}), 500
     finally:
@@ -128,25 +128,25 @@ def user():
 @app.route('/client/dashboard')
 def client_dashboard():
     if "user" not in session:
-        return jsonify({'message': 'Session expired', 'redirect': '/login'}), 403
+        return jsonify({'message': 'Session expired', 'redirect': '#/login'}), 403
     if session['user']['user_role'] != "user":
-        return jsonify({'message': 'Access denied', 'redirect': '/admin/dashboard'}), 403
+        return jsonify({'message': 'Access denied', 'redirect': '#/admin/dashboard'}), 403
     return jsonify({'message': 'Welcome to the Client Dashboard', 'user': session['user']}), 200
 
 # Admin dashboard
 @app.route('/admin/dashboard')
 def admin_dashboard():
     if "user" not in session:
-        return jsonify({'message': 'Session expired', 'redirect': '/login'}), 403
+        return jsonify({'message': 'Session expired', 'redirect': '#/login'}), 403
     if session['user']['user_role'] != "admin":
-        return jsonify({'message': 'Access denied', 'redirect': '/client/dashboard'}), 403
+        return jsonify({'message': 'Access denied', 'redirect': '#/client/dashboard'}), 403
     return jsonify({'message': 'Welcome to the Admin Dashboard', 'user': session['user']}), 200
 
 # Logout route
 @app.route('/logout', methods=['POST'])
 def logout():
     session.clear()
-    return jsonify({'message': 'Logged out successfully', 'redirect': '/login'}), 200
+    return jsonify({'message': 'Logged out successfully', 'redirect': '#/login'}), 200
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
