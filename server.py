@@ -20,7 +20,7 @@ app.config["SESSION_PERMANENT"] = True
 app.config["SESSION_USE_SIGNER"] = True
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
-app.config["SESSION_COOKIE_SECURE"] = True 
+app.config["SESSION_COOKIE_SECURE"] = False
 app.secret_key = os.getenv("SECRET_KEY")
 
 Session(app) 
