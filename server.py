@@ -11,7 +11,7 @@ from flask_session import Session
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app, origins=["https://login-signup-gabyels-projects.vercel.app/"] supports_credentials=True)  # Allow credentials for session handling
+CORS(app, origins=["https://login-signup-gabyels-projects.vercel.app/"], supports_credentials=True)  # Allow credentials for session handling
 bcrypt = Bcrypt(app)
 
 # Secure Session Configuration
