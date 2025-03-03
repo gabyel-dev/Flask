@@ -19,7 +19,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 app.config["SESSION_PERMANENT"] = True
 app.config["SESSION_USE_SIGNER"] = True
 app.config["SESSION_COOKIE_HTTPONLY"] = True
-app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config["SESSION_COOKIE_SAMESITE"] = "None"
 app.config["SESSION_COOKIE_SECURE"] = True 
 app.secret_key = os.getenv("SECRET_KEY")
 
@@ -73,6 +73,7 @@ def login():
                 'email': user['email'],
                 'user_role': role
             }
+            session.permanent = True
             session.modified = True
 
             redirect_url = f"/{role}/dashboard"
