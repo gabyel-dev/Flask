@@ -118,6 +118,34 @@ def register():
         if conn:
             cursor.close()
             conn.close()
+            
+#update password
+@app.route('/change_password', methods=['POST'])
+def change_password():
+    try:
+        data = request.get_json()
+        email = data.get('email')
+        password = data.get('password')
+        newPassword = data.get('new_password')
+        
+        conn = get_db_conn()
+        cursor = conn.cursor()
+        
+        cursor.execute('SELECT * FROM user_list WHERE email = %s', (email,))
+        user = cursor.fetchone()
+        
+        if user and bcrypt.check_password_hash(user['password'], password):
+            
+            hashed_new_password = bcrypt.generate_password_hash(newPassword).decode('utf-8')
+            cursor.execute('UPDATE user_list SET password = %s WHERE email = %s', (hashed_new_password, email))
+            conn.commit()
+            
+            return jsonify({'message': 'password changed successfully'}), 200
+        else:
+            return jsonify({'message': 'Incorrect Email or Password'}), 401
+            
+    except Exception as e:
+        return jsonify({'error': f'Database Error: str{e}'}), 500
 
 # Check user session
 @app.route('/user')
