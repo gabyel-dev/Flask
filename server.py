@@ -131,6 +131,21 @@ def change_password():
         conn = get_db_conn()
         cursor = conn.cursor()
         
+        try:
+            cursor.execute('SELECT * FROM user_list WHERE email = %s', (email,))
+            user = cursor.fetchone()
+
+            if user:
+                if bcrypt.check_password_hash(user['password'], password) and password == newPassword:
+                    return jsonify({'message': 'Old Password cannot be the same as new password'}), 400
+            else:
+                return jsonify({'message': 'User not found'}), 404
+
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+                
+                
+        
         cursor.execute('SELECT * FROM user_list WHERE email = %s', (email,))
         user = cursor.fetchone()
         
