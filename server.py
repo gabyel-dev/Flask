@@ -63,6 +63,9 @@ def login():
         (identifier, identifier))
         user = cursor.fetchone()
 
+        if not user:
+            return jsonify({'message': 'There is no such user'}), 404
+
         if user and bcrypt.check_password_hash(user['password'], password):
             role = user['role'].lower()
             session["user"] = {
