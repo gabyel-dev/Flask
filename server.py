@@ -13,6 +13,7 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app, supports_credentials=True)  # Allow credentials for session handling
 bcrypt = Bcrypt(app)
+Session(app) 
 
 # Secure Session Configuration
 app.config["SESSION_TYPE"] = "filesystem"
@@ -23,7 +24,12 @@ app.config["SESSION_COOKIE_SAMESITE"] = "None"
 app.config["SESSION_COOKIE_SECURE"] = True 
 app.secret_key = os.getenv("SECRET_KEY")
 
-Session(app) 
+app.config.update(
+    SESSION_COOKIE_SECURE=True,  # Ensure cookies work over HTTPS
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="None",  # Change to "None" if cross-site
+)
+
 
 # Database config
 DB_CONFIG = {
@@ -62,7 +68,7 @@ def login():
         cursor.execute('SELECT * FROM user_list WHERE email = %s OR username = %s',
         (identifier, identifier))
         user = cursor.fetchone()
-
+        
         if not user:
             return jsonify({'message': 'There is no such user'}), 404
 
@@ -107,7 +113,7 @@ def register():
         if len(data['password']) < 8:
             return jsonify({'message': 'Password should be at least 8 characters'}), 400
 
-        hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+        hashed_password = bcrypt.generate_password_hash(data['password'], 12).decode('utf-8')
         cursor.execute(
             'INSERT INTO user_list (first_name, last_name, username, contact_number, email, password) VALUES (%s, %s, %s, %s, %s, %s)',
             (data['first_name'], data['last_name'], data['username'], data['contact_number'], data['email'], hashed_password)
